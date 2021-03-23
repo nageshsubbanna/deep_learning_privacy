@@ -1,4 +1,4 @@
-rom __future__ import absolute_import, division, print_function, unicode_literals
+from __future__ import absolute_import, division, print_function, unicode_literals
 import tensorflow as tf
 '''
 tf.config.optimizer.set_jit(True)
@@ -30,12 +30,6 @@ def dice_coe(y_true,y_pred, loss_type='jaccard', smooth=1.):
     if loss_type == 'jaccard':
         union = tf.reduce_sum(tf.square(y_pred_f)) + tf.reduce_sum(tf.square(y_true_f))
 
-    elif loss_type == 'sorensen':
-        union = tf.reduce_sum(y_pred_f) + tf.reduce_sum(y_true_f)
-
-    else:
-        raise ValueError("Unknown `loss_type`: %s" % loss_type)
-
     return (2. * intersection + smooth) / (union + smooth)
 
 def dice_loss(y_true,y_pred, loss_type='jaccard', smooth=1.):
@@ -47,12 +41,6 @@ def dice_loss(y_true,y_pred, loss_type='jaccard', smooth=1.):
 
     if loss_type == 'jaccard':
         union = tf.reduce_sum(tf.square(y_pred_f)) + tf.reduce_sum(tf.square(y_true_f))
-
-    elif loss_type == 'sorensen':
-        union = tf.reduce_sum(y_pred_f) + tf.reduce_sum(y_true_f)
-
-    else:
-        raise ValueError("Unknown `loss_type`: %s" % loss_type)
 
     return (1-(2. * intersection + smooth) / (union + smooth))
 
@@ -158,29 +146,6 @@ def Training():
                    initial_epoch=initial_epoch_of_training,
                    validation_data=Val_batched_dataset,
                    validation_steps=VALIDATION_STEP,
-                   callbacks=[tensorboard_callback,csv_logger,Model_callback])
-
-    ###Multigpu----
-    else:
-        mirrored_strategy = tf.distribute.MirroredStrategy(DISTRIIBUTED_STRATEGY_GPUS)
-        with mirrored_strategy.scope():
-                if RESUME_TRAINING==1:
-                    inputs = tf.keras.Input(shape=INPUT_PATCH_SIZE, name='CT')
-                    Model_3D=Unet3D(inputs,num_classes=NUMBER_OF_CLASSES)
-                    Model_3D.load_weights(RESUME_TRAIING_MODEL)
-                    initial_epoch_of_training=TRAINING_INITIAL_EPOCH
-                    Model_3D.compile(optimizer=OPTIMIZER, loss=[dice_loss], metrics=['accuracy',dice_coe])
-                    Model_3D.summary()
-                else:
-                    initial_epoch_of_training=0
-                    inputs = tf.keras.Input(shape=INPUT_PATCH_SIZE, name='CT')
-                    Model_3D=Unet3D(inputs,num_classes=NUMBER_OF_CLASSES)
-                    Model_3D.compile(optimizer=OPTIMIZER, loss=[dice_loss], metrics=['accuracy',dice_coe])
-                    Model_3D.summary()
-
-
-
-                Model_3D.fit(traing_data,steps_per_epoch=TRAINING_STEP_PER_EPOCH,epochs=TRAING_EPOCH,initial_epoch=initial_epoch_of_training,validation_data=Val_batched_dataset,validation_steps=VALIDATION_STEP,
                    callbacks=[tensorboard_callback,csv_logger,Model_callback])
 
 if __name__ == '__main__':
