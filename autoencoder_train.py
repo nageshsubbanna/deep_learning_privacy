@@ -49,4 +49,4 @@ for i in range(len(decoded_imgs)):
     nii_file["recon_mat"][i] = decoded_imgs[i]
 
 nii_file.close()
-print('Reconstruction HDF5 file successfully created.')
+print('Reconstruction NII file successfully created.')
