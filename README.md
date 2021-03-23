@@ -5,3 +5,5 @@ images respectively.  They need to be compiled with the makefiles provided in th
 
 structural_similarity/mean_correlation_coefficient <image 1> <image 2>
 
+The code requires minc 1.5 and netcdf 3.5 which can be found here http://www.bic.mni.mcgill.ca/software/minc/ and https://www.unidata.ucar.edu/software/netcdf/release-notes-3.5.1.html respectively.  Please follow the instructions there to install the them.  Then run the make file to compile the codes necessary. 
+
