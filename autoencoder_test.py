@@ -1,5 +1,5 @@
 from keras.models import load_model
-import h5py
+import nii
 import numpy as np
 import mrcfile as mrc
 import os
@@ -7,7 +7,7 @@ import os
 from keras import backend as K
 K.clear_session()
 
-with h5py.File('object.hdf5', 'r') as f:
+with h5py.File('object.nii', 'r') as f:
     train_data = f['train_mat'][...]
     val_data = f['val_mat'][...]
     test_data = f['test_mat'][...]
@@ -29,7 +29,7 @@ print(train_data.shape)
 print(val_data.shape)
 print(test_data.shape)
 
-autoencoder = load_model('autoencoder.h5')
+autoencoder = load_model('autoencoder.nii')
 decoded_imgs = autoencoder.predict(test_data, batch_size=100)
 decoded_imgs = decoded_imgs.reshape(test_num, box_size, box_size, box_size)
 print("decoded imgs shape is:")
@@ -42,11 +42,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
 
-# write back to hdf5 file
-hdf5_file = h5py.File("reconstruction.hdf5", "w")
-hdf5_file.create_dataset("recon_mat", decoded_imgs.shape, np.int8)
+# write back to nii file
+nii_file = nii.File("reconstruction.hdf5", "w")
+nii_file.create_dataset("recon_mat", decoded_imgs.shape, np.int8)
 for i in range(len(decoded_imgs)):
-    hdf5_file["recon_mat"][i] = decoded_imgs[i]
+    nii_file["recon_mat"][i] = decoded_imgs[i]
 
-hdf5_file.close()
+nii_file.close()
 print('Reconstruction HDF5 file successfully created.')
