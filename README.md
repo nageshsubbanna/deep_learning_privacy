@@ -7,3 +7,6 @@ structural_similarity/mean_correlation_coefficient <image 1> <image 2>
 
 The code requires minc 1.5 and netcdf 3.5 which can be found here http://www.bic.mni.mcgill.ca/software/minc/ and https://www.unidata.ucar.edu/software/netcdf/release-notes-3.5.1.html respectively.  Please follow the instructions there to install the them.  Then run the make file to compile the codes necessary. 
 
+The data fed to the deep learning methods is read in NIFTI format only here.
+
+The different techniques that we have evaluated are mentioned in the _train for the training part of the code and _test for the testing part of the code. 
